@@ -6,6 +6,7 @@
 -  Testify for testing
 -  Golang-jwt for create auth token 
 -  Godotenv for .env file to store config
+-  Faker to get fake data
 
 #### Test Case 
 **A**. Membuat fungsi login (5 point) <br/>
