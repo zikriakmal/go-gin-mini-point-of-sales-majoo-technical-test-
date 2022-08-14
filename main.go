@@ -1,39 +1,54 @@
 package main
 
 import (
+	"fmt"
 	"github.com/joho/godotenv"
-	"log"
 	"majoo/config"
+	"majoo/controllers"
 	"majoo/models"
+	"majoo/repositories"
+	"majoo/routes"
+	"majoo/services"
+	"os"
 )
 
 func main() {
 
-	// load env
 	err := godotenv.Load()
 	if err != nil {
-		log.Fatal("Error loading .env file")
+		panic("cannot load env")
 	}
+
 	// init db
 	DbConn := config.InitDatabase()
 
-	err = DbConn.Set("gorm:table_options", "ENGINE=InnoDB").AutoMigrate(&models.User{}, &models.Merchant{}, &models.Transaction{}, &models.Outlet{})
-
-	// Add table suffix when creating tables
+	err = DbConn.Set("gorm:table_options", "ENGINE=InnoDB").AutoMigrate(
+		&models.User{},
+		&models.Merchant{},
+		&models.Transaction{},
+		&models.Outlet{},
+	)
 
 	if err != nil {
 		panic(err)
 	}
-
-	// close db when all finish
+	// defer to close db connection
 	defer config.CloseDbConnection(DbConn)
 
-	// create jwt instance
+	UserRepository := repositories.NewUserRepository(DbConn)
+	AuthService := services.NewAuthService(UserRepository)
+	AuthController := controllers.NewAuthController(AuthService)
 
-	// defer to close db connection
+	OutletRepository := repositories.NewOutletRepository(DbConn)
+	OutletService := services.NewOutletService(OutletRepository)
+	OutletController := controllers.NewOutletController(OutletService)
 
-	// define port
+	r := routes.ProvideRoutes(AuthController, OutletController)
 
-	// execute gin run
+	err = r.Run(fmt.Sprintf(":%s", os.Getenv("APP_PORT")))
+
+	if err != nil {
+		panic("error to run app")
+	}
 
 }

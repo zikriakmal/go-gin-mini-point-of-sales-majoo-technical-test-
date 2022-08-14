@@ -1,0 +1,45 @@
+package routes
+
+import (
+	"fmt"
+	"github.com/gin-gonic/gin"
+	"majoo/controllers"
+	"majoo/helper"
+	"majoo/middlewares"
+)
+
+type Routes struct {
+	router *gin.Engine
+}
+
+func ProvideRoutes(authController controllers.AuthController, outletController controllers.OutletController) *gin.Engine {
+	basePath := "/api/v1"
+
+	r := Routes{router: gin.Default()}
+	r.router.Use(middlewares.CORSMiddleware())
+	r.router.GET(basePath, func(ctx *gin.Context) {
+		ctx.JSON(200, "Majoo API")
+	})
+
+	authRoutes := r.router.Group(fmt.Sprintf("%s/auth", basePath))
+	authRoutes.POST("/login", authController.Login)
+
+	merchantRoutes := r.router.Group(fmt.Sprintf("%s/merchants", basePath))
+	merchantRoutes.Use(middlewares.AuthorizeJwt())
+	{
+		merchantRoutes.GET("/", outletController.GetAll)
+		merchantRoutes.GET("/:merchantId", outletController.GetAll)
+		merchantRoutes.GET("/:merchantId/outlets", outletController.GetAll)
+		merchantRoutes.GET("/:merchantId/outlets/:outletId", outletController.Get)
+	}
+
+	r.router.NoRoute(func(c *gin.Context) {
+		c.JSON(404, helper.BuildFailResponse("NOT FOUND", []string{}))
+	})
+
+	return r.router
+}
+
+func (r Routes) Run(addr string) error {
+	return r.router.Run(addr)
+}

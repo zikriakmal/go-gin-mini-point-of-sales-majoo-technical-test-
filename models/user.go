@@ -4,6 +4,7 @@ import "time"
 
 type User struct {
 	ID        int64     `json:"id" gorm:"primary_key,type:bigint(20)"`
+	Name      string    `json:"name" gorm:"type:varchar(45) NOT NULL" faker:"last_name,keep"`
 	UserName  string    `json:"user_name" gorm:"type:varchar(45) NOT NULL" faker:"last_name,keep"`
 	Password  string    `json:"password" gorm:"type:varchar(255) NOT NULL" faker:"password,keep"`
 	CreatedAt time.Time `json:"created_at" gorm:"type:DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP"`
