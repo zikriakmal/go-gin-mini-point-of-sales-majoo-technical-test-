@@ -1,0 +1,15 @@
+version: "3"
+services:
+  majoo-app:
+    build:
+      context: .
+    environment:
+      - GO_ENV=development
+    ports:
+      - 9090:9090
+    command: ["./main"]
+    networks:
+      - docker-env_fullstack
+networks:
+  docker-env_fullstack:
+    external: true

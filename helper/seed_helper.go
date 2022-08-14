@@ -6,7 +6,7 @@ import (
 )
 
 func UserSeed(db *gorm.DB) {
-	password, err := bcrypt.GenerateFromPassword([]byte("majoo123"), 3)
+	password, err := bcrypt.GenerateFromPassword([]byte("majoo123"), 10)
 	stmt := "INSERT INTO users (user_name,name,password,updated_by,created_by) VALUES(?,?,?,?,?);"
 	if err != nil {
 		panic(err)
