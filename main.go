@@ -5,6 +5,7 @@ import (
 	"github.com/joho/godotenv"
 	"majoo/config"
 	"majoo/controllers"
+	"majoo/helper"
 	"majoo/models"
 	"majoo/repositories"
 	"majoo/routes"
@@ -28,6 +29,13 @@ func main() {
 		&models.Transaction{},
 		&models.Outlet{},
 	)
+
+	if os.Getenv("ENABLE_SEED") == "true" {
+		helper.UserSeed(DbConn)
+		helper.MerchantSeed(DbConn)
+		helper.OutletSeed(DbConn)
+		helper.TransactionSeed(DbConn)
+	}
 
 	if err != nil {
 		panic(err)

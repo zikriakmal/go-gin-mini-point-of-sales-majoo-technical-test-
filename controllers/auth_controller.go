@@ -40,6 +40,6 @@ func (c *authController) Login(ctx *gin.Context) {
 	}
 
 	response := helper.BuildSuccessResponse(authResult)
-	ctx.AbortWithStatusJSON(http.StatusUnauthorized, response)
+	ctx.JSON(http.StatusOK, response)
 	return
 }

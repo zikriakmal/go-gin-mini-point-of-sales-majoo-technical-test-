@@ -7,7 +7,7 @@
   },
   "servers": [
     {
-      "url": "http://localhost:9090/api"
+      "url": "http://127.0.0.1:9090/api"
     }
   ],
   "paths": {
@@ -66,6 +66,12 @@
           },
           {
             "$ref": "#/components/parameters/PaginationParamLimit"
+          },
+          {
+            "$ref": "#/components/parameters/DateFromParam"
+          },
+          {
+            "$ref": "#/components/parameters/DateToParam"
           }
         ],
         "responses": {
@@ -114,12 +120,6 @@
           }
         ],
         "parameters": [
-          {
-            "$ref": "#/components/parameters/PaginationParamPage"
-          },
-          {
-            "$ref": "#/components/parameters/PaginationParamLimit"
-          },
           {
             "in": "path",
             "schema": {
@@ -170,6 +170,21 @@
           },
           {
             "$ref": "#/components/parameters/PaginationParamLimit"
+          },
+          {
+            "in": "path",
+            "schema": {
+              "type": "integer",
+              "default": 1
+            },
+            "name": "merchantId",
+            "description": "Id of merchant"
+          },
+          {
+            "$ref": "#/components/parameters/DateFromParam"
+          },
+          {
+            "$ref": "#/components/parameters/DateToParam"
           }
         ],
         "responses": {
@@ -218,12 +233,6 @@
           }
         ],
         "parameters": [
-          {
-            "$ref": "#/components/parameters/PaginationParamPage"
-          },
-          {
-            "$ref": "#/components/parameters/PaginationParamLimit"
-          },
           {
             "in": "path",
             "schema": {
@@ -391,6 +400,24 @@
         },
         "in": "query",
         "description": "Number of page"
+      },
+      "DateFromParam": {
+        "name": "date_from",
+        "schema": {
+          "type": "string",
+          "default": "2020-09-01"
+        },
+        "in": "query",
+        "description": "Date from Transaction"
+      },
+      "DateToParam": {
+        "name": "date_to",
+        "schema": {
+          "type": "string",
+          "default": "2020-09-30"
+        },
+        "in": "query",
+        "description": "Date to Transaction"
       }
     }
   }
