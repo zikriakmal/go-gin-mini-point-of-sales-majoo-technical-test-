@@ -45,6 +45,8 @@ func (o merchantRepository) GetAllByMerchantId(userId int64, request dto.Merchan
 
 func (o merchantRepository) GetByMerchantId(userId int64, request dto.MerchantReqDto) (models.Merchant, error) {
 	var merchant models.Merchant
-	err := o.db.Where("id = ? AND user_id = ?", request.MerchantId, userId).First(&merchant).Error
+	err := o.db.
+		Preload("Transactions").
+		Where("id = ? AND user_id = ?", request.MerchantId, userId).First(&merchant).Error
 	return merchant, err
 }
