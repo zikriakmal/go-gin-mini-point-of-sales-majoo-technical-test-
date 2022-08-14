@@ -206,7 +206,7 @@
         }
       }
     },
-    "/v1/merchants/{merchantId}/outlet/{outletId}": {
+    "/v1/merchants/{merchantId}/outlets/{outletId}": {
       "get": {
         "summary": "Outlet By Id",
         "tags": [

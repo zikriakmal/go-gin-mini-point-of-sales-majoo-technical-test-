@@ -22,7 +22,7 @@ func NewOutletService(outletRepo repositories.OutletRepository) OutletService {
 
 func (s *outletService) GetAll(request dto.OutletsReqDto) (dto.PaginationRes[dto.OutletResDto], error) {
 	var result dto.PaginationRes[dto.OutletResDto]
-	var report []dto.OutletResDto
+	var modelToDto []dto.OutletResDto
 
 	outlets, total, err := s.outletRepo.GetAllByMerchantId(request)
 	if err != nil {
@@ -34,7 +34,8 @@ func (s *outletService) GetAll(request dto.OutletsReqDto) (dto.PaginationRes[dto
 		for _, k := range v.Transactions {
 			omzet += k.BillTotal
 		}
-		report = append(report, dto.OutletResDto{
+		modelToDto = append(modelToDto, dto.OutletResDto{
+			ID:           v.ID,
 			MerchantName: v.Merchant.MerchantName,
 			OutletName:   v.OutletName,
 			Omzet:        omzet,
@@ -51,7 +52,7 @@ func (s *outletService) GetAll(request dto.OutletsReqDto) (dto.PaginationRes[dto
 			PerPage: request.Limit,
 			Total:   total,
 		},
-		Records: report,
+		Records: modelToDto,
 	}
 
 	return result, err
@@ -71,6 +72,7 @@ func (s *outletService) Get(request dto.OutletReqDto) (dto.OutletResDto, error) 
 	}
 
 	result = dto.OutletResDto{
+		ID:           outlet.ID,
 		MerchantName: outlet.Merchant.MerchantName,
 		OutletName:   outlet.OutletName,
 		Omzet:        omzet,

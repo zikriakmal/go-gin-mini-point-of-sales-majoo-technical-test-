@@ -12,7 +12,11 @@ type Routes struct {
 	router *gin.Engine
 }
 
-func ProvideRoutes(authController controllers.AuthController, outletController controllers.OutletController) *gin.Engine {
+func ProvideRoutes(
+	authController controllers.AuthController,
+	merchantController controllers.MerchantController,
+	outletController controllers.OutletController) *gin.Engine {
+
 	basePath := "/api/v1"
 
 	r := Routes{router: gin.Default()}
@@ -27,8 +31,8 @@ func ProvideRoutes(authController controllers.AuthController, outletController c
 	merchantRoutes := r.router.Group(fmt.Sprintf("%s/merchants", basePath))
 	merchantRoutes.Use(middlewares.AuthorizeJwt())
 	{
-		merchantRoutes.GET("/", outletController.GetAll)
-		merchantRoutes.GET("/:merchantId", outletController.GetAll)
+		merchantRoutes.GET("/", merchantController.GetAll)
+		merchantRoutes.GET("/:merchantId", merchantController.Get)
 		merchantRoutes.GET("/:merchantId/outlets", outletController.GetAll)
 		merchantRoutes.GET("/:merchantId/outlets/:outletId", outletController.Get)
 	}

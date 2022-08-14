@@ -25,7 +25,6 @@ func AuthorizeJwt() gin.HandlerFunc {
 			return
 		}
 		c.Set("user_id", int64(validateRes["user_id"].(float64)))
-		//c.Set("auth", oauthData.Member)
 		c.Next()
 	}
 }

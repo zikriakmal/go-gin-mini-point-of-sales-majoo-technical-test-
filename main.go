@@ -39,11 +39,15 @@ func main() {
 	AuthService := services.NewAuthService(UserRepository)
 	AuthController := controllers.NewAuthController(AuthService)
 
+	MerchantRepository := repositories.NewMerchantRepository(DbConn)
+	MerchantService := services.NewMerchantService(MerchantRepository)
+	MerchantController := controllers.NewMerchantController(MerchantService)
+
 	OutletRepository := repositories.NewOutletRepository(DbConn)
 	OutletService := services.NewOutletService(OutletRepository)
-	OutletController := controllers.NewOutletController(OutletService)
+	OutletController := controllers.NewOutletController(OutletService, MerchantService)
 
-	r := routes.ProvideRoutes(AuthController, OutletController)
+	r := routes.ProvideRoutes(AuthController, MerchantController, OutletController)
 
 	err = r.Run(fmt.Sprintf(":%s", os.Getenv("APP_PORT")))
 

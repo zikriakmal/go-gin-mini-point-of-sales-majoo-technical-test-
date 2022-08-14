@@ -40,6 +40,10 @@ func (o outletRepository) GetAllByMerchantId(request dto.OutletsReqDto) ([]model
 
 func (o outletRepository) GetByOutletId(request dto.OutletReqDto) (models.Outlet, error) {
 	var outlet models.Outlet
-	err := o.db.Where("merchant_id = ? AND outlet_id = ? ", request.MerchantId, request.OutletId).First(&outlet).Error
+	err := o.db.
+		Preload("Merchant").
+		Where("merchant_id = ? AND id = ? ", request.MerchantId, request.OutletId).
+		First(&outlet).
+		Error
 	return outlet, err
 }

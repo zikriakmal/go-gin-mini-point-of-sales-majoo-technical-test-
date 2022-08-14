@@ -1,8 +1,8 @@
 package dto
 
 type MerchantResDto struct {
+	ID           int64   `json:"id"`
 	MerchantName string  `json:"merchant_name"`
-	OutletName   string  `json:"outlet_name"`
 	Omzet        float64 `json:"omzet"`
 }
 
