@@ -56,6 +56,7 @@ func main() {
 	OutletController := controllers.NewOutletController(OutletService, MerchantService)
 
 	r := routes.ProvideRoutes(AuthController, MerchantController, OutletController)
+	r.Static("/public", "./public")
 
 	err = r.Run(fmt.Sprintf(":%s", os.Getenv("APP_PORT")))
 

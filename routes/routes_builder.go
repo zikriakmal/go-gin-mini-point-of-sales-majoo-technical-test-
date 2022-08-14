@@ -22,9 +22,18 @@ func ProvideRoutes(
 	r := Routes{router: gin.Default()}
 	r.router.Use(middlewares.CORSMiddleware())
 
-	r.router.GET(basePath, func(ctx *gin.Context) {
-		ctx.JSON(200, "Majoo API")
+	r.router.GET("", func(ctx *gin.Context) {
+		ctx.Data(200, "text/html; charset=utf-8", []byte(
+			"<html>"+
+				"<h1> Majoo API Test Case </h1>"+
+				"<hr/>"+
+				"<a href=\"/public/apispec.json\" download>OpenAPI 3.0 Api Spec Test Case</a>"+
+				"<br/>"+
+				"<br/>"+
+				"<a href=\"/public/readme.md\" download>Readme Markdown</a>"+
+				"</html>"))
 	})
+
 	//default if url not initialized
 	r.router.NoRoute(func(c *gin.Context) {
 		c.JSON(404, helper.BuildFailResponse("NOT FOUND", []string{}))
