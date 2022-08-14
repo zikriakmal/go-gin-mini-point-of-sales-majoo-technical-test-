@@ -29,8 +29,14 @@ func (o merchantRepository) GetAllByMerchantId(userId int64, request dto.Merchan
 	o.db.Model(&models.Merchant{}).Count(&count).
 		Where("user_id = ? ", userId)
 
+	dateFrom := helper.SetDefaultDate(request.DateFrom, 2022, 8, 1)
+	dateTo := helper.SetDefaultDate(request.DateFrom, 2022, 10, 30)
+
 	err := o.db.Model(&models.Merchant{}).Scopes(helper.Paginate(request.PaginationReqDto)).
-		Preload("Transactions").
+		Preload("Transactions", func(db *gorm.DB) *gorm.DB {
+			return db.Where("created_at >= ?", dateFrom).
+				Where("created_at <= ?", dateTo)
+		}).
 		Where("user_id = ?", userId).
 		Find(&merchants).Error
 

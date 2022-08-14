@@ -15,4 +15,5 @@ type OutletReqDto struct {
 type OutletsReqDto struct {
 	MerchantReqDto
 	PaginationReqDto
+	DateFilter
 }

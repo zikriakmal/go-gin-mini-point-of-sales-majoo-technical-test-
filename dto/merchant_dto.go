@@ -12,4 +12,5 @@ type MerchantReqDto struct {
 
 type MerchantsReqDto struct {
 	PaginationReqDto
+	DateFilter
 }
