@@ -29,12 +29,12 @@ miliknya (5 point)<br/>
 
 Notes :
 - No 1 is archive by .zip git archive
-- No 1 has deployed on majoo.zikriakmal.my.id
+- No 1 has deployed on https://majoo.zikriakmal.my.id/
+- No 1 downloadable documentation access on https://majoo.zikriakmal.my.id/
 - No 1 has openapi documentation named “apispec.json” (openapi 3.0)
 - to run no 1 cp .env.example to .env and set database configuration and set jwt_secret
 - docker-compose up -d ( to run with docker compose)
 - app has default seed set on .env true or false ( if seed setted true every app restart seed run and insert multiple times)
 - default user login has seed with credential :
-    - username : majoo
-    - password : majoo123
- 
+  - username : majoo
+  - password : majoo123
