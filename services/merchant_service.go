@@ -3,11 +3,13 @@ package services
 import (
 	"majoo/dto"
 	"majoo/repositories"
+	"time"
 )
 
 type MerchantService interface {
 	GetAll(userId int64, request dto.MerchantsReqDto) (dto.PaginationRes[dto.MerchantResDto], error)
 	Get(userId int64, request dto.MerchantReqDto) (dto.MerchantResDto, error)
+	GetReport(userId int64, request dto.MerchantReportReqDto) (dto.PaginationRes[dto.MerchantReportResDto], error)
 }
 
 type merchantService struct {
@@ -75,5 +77,48 @@ func (s *merchantService) Get(userId int64, request dto.MerchantReqDto) (dto.Mer
 		MerchantName: merchant.MerchantName,
 		Omzet:        omzet,
 	}
+	return result, nil
+}
+
+func (s *merchantService) GetReport(userId int64, request dto.MerchantReportReqDto) (dto.PaginationRes[dto.MerchantReportResDto], error) {
+	var result dto.PaginationRes[dto.MerchantReportResDto]
+
+	merchant, err := s.merchantRepo.GetReportsByMerchantId(userId, request)
+
+	if err != nil {
+		return result, err
+	}
+
+	var finalRes []dto.MerchantReportResDto
+
+	total := int64((request.DateTo.Sub(request.DateFrom).Hours() / 24) + 1)
+	for i := int64(1); i <= total; i++ {
+		var sumDaily float64 = 0
+		for _, v := range merchant.Transactions {
+			if v.CreatedAt.Month() == request.DateFrom.Month() && v.CreatedAt.Day() == int(i) {
+				sumDaily += v.BillTotal
+			}
+		}
+		finalRes = append(finalRes, dto.MerchantReportResDto{
+			MerchantName: merchant.MerchantName,
+			Omzet:        sumDaily,
+			Date:         time.Date(request.DateTo.Year(), request.DateTo.Month(), int(i), 0, 0, 0, 0, time.UTC),
+		})
+	}
+
+	result = dto.PaginationRes[dto.MerchantReportResDto]{
+		MetaData: struct {
+			Page    int   `json:"page"`
+			PerPage int   `json:"per_page"`
+			Total   int64 `json:"total"`
+		}{
+			Page:    request.Page,
+			PerPage: request.Limit,
+			Total:   int64((request.DateTo.Sub(request.DateFrom).Hours() / 24) + 1),
+		},
+
+		Records: finalRes[(request.Page*request.Limit)-request.Limit : request.Limit*request.Page],
+	}
+
 	return result, nil
 }

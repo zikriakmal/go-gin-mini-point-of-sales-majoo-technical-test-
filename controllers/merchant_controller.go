@@ -11,6 +11,7 @@ import (
 type MerchantController interface {
 	GetAll(ctx *gin.Context)
 	Get(ctx *gin.Context)
+	GetReports(ctx *gin.Context)
 }
 
 type merchantController struct {
@@ -68,4 +69,30 @@ func (c *merchantController) Get(ctx *gin.Context) {
 		return
 	}
 	ctx.JSON(http.StatusOK, helper.BuildSuccessResponse(merchant))
+}
+
+func (c *merchantController) GetReports(ctx *gin.Context) {
+	var request dto.MerchantReportReqDto
+	err := ctx.ShouldBindUri(&request)
+	err = ctx.BindQuery(&request)
+	userId := ctx.MustGet("user_id").(int64)
+
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusNotFound, nil)
+		return
+	}
+
+	merchant, err := c.merchantService.GetReport(userId, request)
+
+	if err != nil {
+		if err.Error() == "record not found" {
+			ctx.AbortWithStatusJSON(http.StatusNotFound, helper.BuildFailResponse("NOT FOUND", []string{}))
+			return
+		}
+		ctx.AbortWithStatusJSON(http.StatusInternalServerError, nil)
+		return
+	}
+
+	ctx.JSON(http.StatusOK, helper.BuildSuccessResponse(merchant))
+
 }

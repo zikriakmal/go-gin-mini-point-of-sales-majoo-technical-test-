@@ -47,6 +47,7 @@ func ProvideRoutes(
 	{
 		merchantRoutes.GET("", merchantController.GetAll)
 		merchantRoutes.GET("/:merchantId", merchantController.Get)
+		merchantRoutes.GET("/:merchantId/report/omzet-daily-merchant", merchantController.GetReports)
 		merchantRoutes.GET("/:merchantId/outlets", outletController.GetAll)
 		merchantRoutes.GET("/:merchantId/outlets/:outletId", outletController.Get)
 	}

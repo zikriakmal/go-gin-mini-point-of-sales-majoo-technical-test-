@@ -121,6 +121,7 @@
         ],
         "parameters": [
           {
+            "required": true,
             "in": "path",
             "schema": {
               "type": "integer",
@@ -153,6 +154,75 @@
         }
       }
     },
+    "/v1/merchants/{merchantId}/report/omzet-daily-merchant": {
+      "get": {
+        "summary": " report by merchant id",
+        "tags": [
+          "Merchant API"
+        ],
+        "security": [
+          {
+            "Auth": []
+          }
+        ],
+        "parameters": [
+          {
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "integer",
+              "default": 1
+            },
+            "name": "merchantId",
+            "description": "Id of merchant"
+          },
+          {
+            "$ref": "#/components/parameters/PaginationParamPage"
+          },
+          {
+            "$ref": "#/components/parameters/PaginationParamLimit"
+          },
+          {
+            "$ref": "#/components/parameters/DateFromParam"
+          },
+          {
+            "$ref": "#/components/parameters/DateToParam"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success get report by merchant id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "default": "success"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "_metadata": {
+                          "$ref": "#/components/schemas/PaginationMetaData"
+                        },
+                        "records": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/DailyMerchantRes"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/v1/merchants/{merchantId}/outlets": {
       "get": {
         "summary": "All Outlet",
@@ -172,6 +242,7 @@
             "$ref": "#/components/parameters/PaginationParamLimit"
           },
           {
+            "required": true,
             "in": "path",
             "schema": {
               "type": "integer",
@@ -234,6 +305,7 @@
         ],
         "parameters": [
           {
+            "required": true,
             "in": "path",
             "schema": {
               "type": "integer",
@@ -243,6 +315,7 @@
             "description": "Id of merchant"
           },
           {
+            "required": true,
             "in": "path",
             "schema": {
               "type": "integer",
@@ -333,6 +406,23 @@
           }
         }
       },
+      "DailyMerchantRes": {
+        "type": "object",
+        "properties": {
+          "merchant_name": {
+            "type": "string",
+            "default": "Majoo Merchant 1"
+          },
+          "omzet": {
+            "type": "number",
+            "default": 100
+          },
+          "date": {
+            "type": "string",
+            "default": "2022-02-01"
+          }
+        }
+      },
       "OutletRes": {
         "type": "object",
         "properties": {
@@ -354,7 +444,6 @@
           }
         }
       },
-
       "LoginReq": {
         "type": "object",
         "properties": {
