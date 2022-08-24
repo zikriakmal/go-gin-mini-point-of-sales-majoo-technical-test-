@@ -111,7 +111,7 @@ func (s *merchantService) GetReport(userId int64, request dto.MerchantReportReqD
 
 	if start <= int(total) && end <= int(total) {
 		finalRes = finalRes[start:end]
-	} else if start <= int(total) && end >= int(total) {
+	} else if start < int(total) && end > int(total) {
 		finalRes = finalRes
 	} else {
 		finalRes = []dto.MerchantReportResDto{}
