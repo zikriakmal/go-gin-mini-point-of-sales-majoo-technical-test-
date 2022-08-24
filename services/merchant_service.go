@@ -92,7 +92,7 @@ func (s *merchantService) GetReport(userId int64, request dto.MerchantReportReqD
 	var finalRes []dto.MerchantReportResDto
 
 	total := int64((request.DateTo.Sub(request.DateFrom).Hours() / 24) + 1)
-	for i := int64(1); i <= total; i++ {
+	for i := int64(request.DateFrom.Day()); i <= int64(request.DateFrom.Day())+total-1; i++ {
 		var sumDaily float64 = 0
 		for _, v := range merchant.Transactions {
 			if v.CreatedAt.Month() == request.DateFrom.Month() && v.CreatedAt.Day() == int(i) {
@@ -106,6 +106,17 @@ func (s *merchantService) GetReport(userId int64, request dto.MerchantReportReqD
 		})
 	}
 
+	start := (request.Page * request.Limit) - request.Limit
+	end := request.Limit * request.Page
+
+	if start <= int(total) && end <= int(total) {
+		finalRes = finalRes[start:end]
+	} else if start <= int(total) && end >= int(total) {
+		finalRes = finalRes
+	} else {
+		finalRes = []dto.MerchantReportResDto{}
+	}
+
 	result = dto.PaginationRes[dto.MerchantReportResDto]{
 		MetaData: struct {
 			Page    int   `json:"page"`
@@ -114,10 +125,9 @@ func (s *merchantService) GetReport(userId int64, request dto.MerchantReportReqD
 		}{
 			Page:    request.Page,
 			PerPage: request.Limit,
-			Total:   int64((request.DateTo.Sub(request.DateFrom).Hours() / 24) + 1),
+			Total:   total,
 		},
-
-		Records: finalRes[(request.Page*request.Limit)-request.Limit : request.Limit*request.Page],
+		Records: finalRes,
 	}
 
 	return result, nil

@@ -28,8 +28,8 @@ func (o merchantRepository) GetAllByMerchantId(userId int64, request dto.Merchan
 	var merchants []models.Merchant
 	var count int64
 
-	o.db.Model(&models.Merchant{}).Count(&count).
-		Where("user_id = ? ", userId)
+	o.db.Model(&models.Merchant{}).
+		Where("user_id = ? ", userId).Count(&count)
 
 	dateFrom := helper.SetDefaultDate(request.DateFrom, 2022, 8, 1)
 	dateTo := helper.SetDefaultDate(request.DateTo, 2022, 10, 30)
